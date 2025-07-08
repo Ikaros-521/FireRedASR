@@ -90,6 +90,9 @@ class KaldifeatFbank:
             sample_rate, wav_np = kaldiio.load_mat(wav)
         elif type(wav) in [tuple, list] and len(wav) == 2:
             sample_rate, wav_np = wav
+        # 自动兼容多通道音频
+        if len(wav_np.shape) > 1:
+            wav_np = wav_np.mean(axis=-1)  # 按最后一个维度取均值，变为单通道
         assert len(wav_np.shape) == 1
 
         dither = self.dither if is_train else 0.0
