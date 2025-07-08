@@ -1,3 +1,10 @@
+# 整合包相关
+测试命令  
+python speech2text.py --wav_path examples/wav/18s.wav --asr_type "llm" --model_dir pretrained_models/FireRedASR-LLM-L  
+python speech2text.py --wav_path examples/wav/18s.wav   --asr_type "aed" --model_dir pretrained_models/FireRedASR-AED-L  
+
+如果音频是多通道（如 shape 为 (N, 2)），会自动取均值变为单通道，再继续后续处理。
+
 <div align="center">
 <h1>FireRedASR: Open-Source Industrial-Grade
 <br>

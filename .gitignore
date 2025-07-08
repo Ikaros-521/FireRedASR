@@ -3,3 +3,4 @@ Miniconda3
 pretrained_models/*
 *.pyc
 __pycache__/
+ffmpeg
