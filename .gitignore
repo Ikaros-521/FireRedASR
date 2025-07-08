@@ -1,0 +1,5 @@
+Miniconda3
+.history
+pretrained_models/*
+*.pyc
+__pycache__/
