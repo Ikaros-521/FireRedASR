@@ -106,22 +106,37 @@ class FireRedAsr:
                                 "rtf": f"{rtf:.4f}"})
             return results
 
-
+def args_to_package(model_path, encoder_path=None, llm_dir=None):
+    # 强制全部转为正斜杠
+    model_path = model_path.replace("\\", "/")
+    if encoder_path:
+        encoder_path = encoder_path.replace("\\", "/")
+    if llm_dir:
+        llm_dir = llm_dir.replace("\\", "/")
+    package = torch.load(model_path, map_location=lambda storage, loc: storage, weights_only=False)
+    # 这里再次强制替换，防止 package["args"] 里有反斜杠
+    if hasattr(package["args"], "encoder_path"):
+        package["args"].encoder_path = str(package["args"].encoder_path).replace("\\", "/")
+    else:
+        package["args"].encoder_path = encoder_path
+    if hasattr(package["args"], "llm_dir"):
+        package["args"].llm_dir = str(package["args"].llm_dir).replace("\\", "/")
+    else:
+        package["args"].llm_dir = llm_dir
+    print("model args:", package["args"])
+    return package
+    
 
 def load_fireredasr_aed_model(model_path):
-    package = torch.load(model_path, map_location=lambda storage, loc: storage, weights_only=False)
-    print("model args:", package["args"])
+    package = args_to_package(model_path)
     model = FireRedAsrAed.from_args(package["args"])
     model.load_state_dict(package["model_state_dict"], strict=True)
     return model
 
 
 def load_firered_llm_model_and_tokenizer(model_path, encoder_path, llm_dir):
-    package = torch.load(model_path, map_location=lambda storage, loc: storage, weights_only=False)
-    package["args"].encoder_path = encoder_path
-    package["args"].llm_dir = llm_dir
-    print("model args:", package["args"])
+    package = args_to_package(model_path, encoder_path, llm_dir)
     model = FireRedAsrLlm.from_args(package["args"])
     model.load_state_dict(package["model_state_dict"], strict=False)
-    tokenizer = LlmTokenizerWrapper.build_llm_tokenizer(llm_dir)
+    tokenizer = LlmTokenizerWrapper.build_llm_tokenizer(package["args"].llm_dir)
     return model, tokenizer
