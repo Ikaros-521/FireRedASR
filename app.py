@@ -491,6 +491,7 @@ if __name__ == "__main__":
 
     if args.ssl:
         demo.launch(
+            server_name="0.0.0.0",
             share=False,
             ssl_certfile="cert.pem",
             ssl_keyfile="key.pem",
