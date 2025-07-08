@@ -240,7 +240,7 @@ def transcribe_audio(audio_path, asr_type, model_dir, use_gpu, beam_size,
         
         # 处理模型到设备的移动
         if asr_type == "llm" and use_gpu:
-            print("检测到LLM模型，使用特殊处理...")
+            print(f"检测到LLM模型，use_gpu={use_gpu}，使用特殊处理...")
             # 对于LLM模型，我们直接在原始的transcribe方法中处理设备移动
             # 修改FireRedAsr.transcribe方法中的设备处理逻辑
             feats, lengths, durs = model.feat_extractor([audio_path])
@@ -248,7 +248,7 @@ def transcribe_audio(audio_path, asr_type, model_dir, use_gpu, beam_size,
             
             if use_gpu:
                 feats, lengths = feats.cuda(), lengths.cuda()
-                # 不调用model.cuda()，避免meta tensor错误
+                model.model.cuda()
             else:
                 feats, lengths = feats.cpu(), lengths.cpu()
                 model.model.cpu()
@@ -375,7 +375,7 @@ def create_interface():
                     type="filepath"
                 )
                 # audio_player = gr.Audio(label="音频预览", type="filepath", visible=True)
-                asr_type = gr.Radio(choices=["aed", "llm"], label="ASR类型（请根据实际使用模型切换）", value="aed")
+                asr_type = gr.Radio(choices=["aed", "llm"], label="ASR类型（请根据实际使用模型切换）", value="llm")
                 
                 gr.Markdown("""
                 > **提示**: 
@@ -482,5 +482,19 @@ def create_interface():
 
 if __name__ == "__main__":
     print("启动FireRedASR Gradio界面...")
+
+    parser = argparse.ArgumentParser(description="Run the FastAPI server with optional SSL.")
+    parser.add_argument("--ssl", action="store_true", help="Enable SSL (HTTPS) mode")
+    args = parser.parse_args()
+    
     demo = create_interface()
-    demo.launch(share=False) 
+
+    if args.ssl:
+        demo.launch(
+            share=False,
+            ssl_certfile="cert.pem",
+            ssl_keyfile="key.pem",
+            ssl_verify=False
+        )
+    else:
+        demo.launch(server_name="0.0.0.0", share=False) 

@@ -10,3 +10,4 @@ soundfile>=0.13.1
 psutil>=5.9.0
 
 gradio>=5.35.0
+bitsandbytes>=0.46.1

@@ -5,7 +5,7 @@ import re
 
 import torch
 import torch.nn as nn
-from transformers import AutoModelForCausalLM
+from transformers import AutoModelForCausalLM, BitsAndBytesConfig
 
 from fireredasr.models.fireredasr_aed import FireRedAsrAed
 from fireredasr.models.module.adapter import Adapter
@@ -40,7 +40,7 @@ class FireRedAsrLlm(nn.Module):
             encoder.eval()
 
         # 降低显存占用
-        args.use_fp16 = True
+        args.load_in_4bit = True
 
         if args.use_flash_attn:
             attn_implementation = "flash_attention_2"
@@ -55,12 +55,18 @@ class FireRedAsrLlm(nn.Module):
             else:
                 torch_dtype = torch.float32
 
+        if getattr(args, "load_in_4bit", False):
+            quantization_config = BitsAndBytesConfig(load_in_4bit=True)
+        else:
+            quantization_config = None
+            
         # Build LLM
         llm = AutoModelForCausalLM.from_pretrained(
             args.llm_dir,
             attn_implementation=attn_implementation,
             torch_dtype=torch_dtype,
             local_files_only=True,
+            quantization_config=quantization_config,
         )
         count_model_parameters(llm)
 
