@@ -39,6 +39,9 @@ class FireRedAsrLlm(nn.Module):
                 param.requires_grad = False
             encoder.eval()
 
+        # 降低显存占用
+        args.use_fp16 = True
+
         if args.use_flash_attn:
             attn_implementation = "flash_attention_2"
             if args.use_fp16:
