@@ -55,17 +55,17 @@ def main(args):
             batch_uttid,
             batch_wav_path,
             {
-            "use_gpu": args.use_gpu,
-            "beam_size": args.beam_size,
-            "nbest": args.nbest,
-            "decode_max_len": args.decode_max_len,
-            "softmax_smoothing": args.softmax_smoothing,
-            "aed_length_penalty": args.aed_length_penalty,
-            "eos_penalty": args.eos_penalty,
-            "decode_min_len": args.decode_min_len,
-            "repetition_penalty": args.repetition_penalty,
-            "llm_length_penalty": args.llm_length_penalty,
-            "temperature": args.temperature
+                "use_gpu": args.use_gpu,
+                "beam_size": args.beam_size,
+                "nbest": args.nbest,
+                "decode_max_len": args.decode_max_len,
+                "softmax_smoothing": args.softmax_smoothing,
+                "aed_length_penalty": args.aed_length_penalty,
+                "eos_penalty": args.eos_penalty,
+                "decode_min_len": args.decode_min_len,
+                "repetition_penalty": args.repetition_penalty,
+                "llm_length_penalty": args.llm_length_penalty,
+                "temperature": args.temperature
             }
         )
 

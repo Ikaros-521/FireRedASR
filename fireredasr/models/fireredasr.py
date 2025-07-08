@@ -17,6 +17,8 @@ class FireRedAsr:
     def from_pretrained(cls, asr_type, model_dir):
         assert asr_type in ["aed", "llm"]
 
+        print(f"加载模型: {model_dir}")
+
         cmvn_path = os.path.join(model_dir, "cmvn.ark")
         feat_extractor = ASRFeatExtractor(cmvn_path)
 
