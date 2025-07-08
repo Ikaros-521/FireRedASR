@@ -58,7 +58,6 @@ class FireRedAsrLlm(nn.Module):
             attn_implementation=attn_implementation,
             torch_dtype=torch_dtype,
             local_files_only=True,
-            device_map="auto",
         )
         count_model_parameters(llm)
 
