@@ -369,8 +369,12 @@ def create_interface():
             with gr.Column(scale=1):
                 # 核心参数 - 显眼显示
                 gr.Markdown("## 核心参数")
-                audio_file = gr.File(label="上传音频文件", file_types=[".wav"], type="filepath")
-                audio_player = gr.Audio(label="音频预览", type="filepath", visible=True)
+                audio_file = gr.Audio(
+                    label="上传或录制音频（支持WAV上传或直接录音）",
+                    sources=["upload", "microphone"],
+                    type="filepath"
+                )
+                # audio_player = gr.Audio(label="音频预览", type="filepath", visible=True)
                 asr_type = gr.Radio(choices=["aed", "llm"], label="ASR类型（请根据实际使用模型切换）", value="aed")
                 
                 gr.Markdown("""
@@ -417,11 +421,11 @@ def create_interface():
                 output_text = gr.Textbox(label="识别结果", lines=10)
         
         # 设置音频加载事件
-        audio_file.change(
-            fn=load_audio,
-            inputs=[audio_file],
-            outputs=[audio_player]
-        )
+        # audio_file.change(
+        #     fn=load_audio,
+        #     inputs=[audio_file],
+        #     outputs=[audio_player]
+        # )
         
         # 设置ASR类型变化事件
         asr_type.change(
